@@ -1,24 +1,35 @@
 let cheerio = require('cheerio');
-
 let axios = require('axios');
+
 module.exports = (app) => {
-    // app.get('/scrape', (req, res) => {
-    //     console.log("INSIDE SCRAPE")
-    //     axios.get('http://www.nytimes.com').then((response) => {
-    //         console.log("RESPONSE: ", response)
+    // app.get("/scrape", function (req, res) {
 
-    //         var $ = cheerio.load(response);
+    //grab html body with axios//
+    axios.get('https://www.nytimes.com').then(function (response) {
+        console.log("RESPONSE: ", response)
+
+        var $ = cheerio.load(response.data);
 
 
-    //         $('h1 .eln-headline').each((i, element) => {
-    //             console.log("ELEMENT: ", element)
-    //         })
-    //     })
-    // })
-    app.get("/scrape", function (req, res) {
-        axios.get("http://www.https://www.nytimes.com/").then(function (response) {
+        $('h2 class').each(function (i, element) {
+            let result = {};
 
-            var $ = cheerio.load(response.data);
-        })
+            //add text and href of links, saving as properties of the result object
+            result.title = $(this)
+                .children("a")
+                .text();
+            result.link = $(this)
+                .children("a")
+                .attr("href");
+
+            db.Article.create(result)
+                .then(function (dbArticle) {
+                    console.log(dbArticle);
+                })
+                .catch(function (err) {
+                    //If error occurs
+                    return res.json(err);
+                });
+        });
     })
 }

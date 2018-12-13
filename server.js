@@ -13,15 +13,25 @@ let app = express();
 
 //TO DO: CONFIG MIDDLEWARE//
 
+
+//ROUTES
 require('./routes/htmlRoutes')(app);
 require('./routes/apiRoutes')(app);
 
-//ROUTES
+// app.get("/scrape", function (req, res) {
+//     console.log("SCRAPE NYTIMES ARTICLES");
+//     axios.get("http://www.nytimes.com/").then(function (response) {
+
+//         let $ = cheerio.load(response.data)
+//     })
+// })
+
+
 
 
 
 //Start Server
 app.listen(PORT, function () {
-    console.log(`Port is running on ${PORT}`)
-}); 
+    console.log(`Port is running on ${PORT}`);
+});
 
