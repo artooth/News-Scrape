@@ -25,14 +25,16 @@ app.use(express.static("public"));
 mongoose.connect("mongodb://heroku_v706sstx:dingp8rpj67i20drlpf7u1ddhn@ds227243.mlab.com:27243/heroku_v706sstx", { useNewUrlParser: true });
 
 // //ROUTES
-// require('./routes/htmlRoutes')(app);
+require('./routes/htmlRoutes')(app);
 // require('./routes/apiRoutes')(app);
+
+
 
 //Get route for scraping the nytimes
 app.get("/scrape", function (req, res) {
 
     //grab html body with axios//
-    axios.get('http://www.nytimes.com/').then(function (response) {
+    axios.get("http://www.echojs.com/").then(function (response) {
         console.log("RESPONSE: ", response)
         //load into cheerio
         var $ = cheerio.load(response.data);
