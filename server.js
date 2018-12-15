@@ -2,15 +2,18 @@ let mongoose = require('mongoose');
 let express = require('express');
 var logger = require("morgan");
 let exphbs = require('express-handlebars');
-
 let axios = require('axios');
 var cheerio = require("cheerio");
 let db = require("./models");
 
-let PORT = 3000;
+let PORT = process.env.PORT || 3000;
 
 let app = express();
 
+
+// config mongoose
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+mongoose.connect(MONGODB_URI);
 
 //CONFIG MIDDLEWARE//
 // Use morgan logger for logging requests
@@ -22,10 +25,13 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // CONNECT TO THE MONGO DB//
+
+
+
 mongoose.connect("mongodb://heroku_v706sstx:dingp8rpj67i20drlpf7u1ddhn@ds227243.mlab.com:27243/heroku_v706sstx", { useNewUrlParser: true });
 
 // //ROUTES
-require('./routes/htmlRoutes')(app);
+// require('./routes/htmlRoutes')(app);
 // require('./routes/apiRoutes')(app);
 
 
@@ -34,18 +40,18 @@ require('./routes/htmlRoutes')(app);
 app.get("/scrape", function (req, res) {
 
     //grab html body with axios//
-    axios.get("http://www.echojs.com/").then(function (response) {
+    axios.get("https://www.nytimes.com/section/technology").then(function (response) {
         console.log("RESPONSE: ", response)
         //load into cheerio
         var $ = cheerio.load(response.data);
 
 
-        $("article h2").each(function (i, element) {
+        $("article").each(function (i, element) {
             let result = {};
 
             //add text and href of links, saving as properties of the result object
             result.title = $(this)
-                .children("a")
+                .children("h2")
                 .text();
             result.link = $(this)
                 .children("a")
@@ -76,7 +82,6 @@ app.get("/articles", function (req, res) {
         .catch(function (err) {
             res.json(err);
         });
-
 });
 
 
